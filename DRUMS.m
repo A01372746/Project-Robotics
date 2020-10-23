@@ -4,9 +4,9 @@ close all
 
 
 
-original_image = imread('silverNewT.jpeg');
-background_image = imread('backgroundT.jpeg');  
-new = imabsdiff(original_image,background_image)
+original_image = imread('silverNewF.jpeg');
+background_image = imread('backgroundF.jpeg');  
+new = imabsdiff(original_image,background_image);
 grayImage = rgb2gray(new);
 [pixelCount,grayLevels] = imhist(grayImage);                                                                                   
 max_value = max(max(grayImage));                                                                                                
@@ -19,20 +19,20 @@ level_with_max = grayLevels(x);
 level_with_min = grayLevels(y);                                                                                                 
 
 
-
+o = grayImage;
 a = grayImage;                                                                                                                 
 optimal_threshold = graythresh(a);                                                                                                                                                                                                                             %normalized form. 
 b = imbinarize(a,optimal_threshold);                                                                                             
                       
-cc=bwconncomp(b);                               
-cc2=bwconncomp(not(b)); 
+cc=bwconncomp(not(b));                               
+cc2=bwconncomp(b); 
 stats= regionprops(cc, 'Perimeter');
 stats2= regionprops(cc2, 'Perimeter');                                                                                          
-idx =find([stats.Perimeter]> 4200);                                                                                             
+idx =find([stats.Perimeter]> 8000);                                                                                             
                                                                                                                                 
 binImage2 =ismember(labelmatrix(cc),idx);                                                                                       
 
-idx2 =find([stats2.Perimeter]< 4200 & [stats2.Perimeter]> 600);                                                                 
+idx2 =find([stats2.Perimeter]< 3500 & [stats2.Perimeter]> 800);                                                                 
                                                                                                                                 
 binImage3 =ismember(labelmatrix(cc2),idx2);                                                                                     
 stats3 = regionprops('table',binImage2, 'MajorAxisLength','MinorAxisLength', 'Perimeter', 'Area', 'EquivDiameter', 'Centroid') 
@@ -42,17 +42,17 @@ final= bwlabel(b);
 figure 
 
 subplot(3, 2, 1); 
-imshow(original_image);                         
+imshow(original_image);     %original                     
 title(['Original image']);
 subplot(3, 2, 2);
-imshow(grayImage);                              
-title(['GrayScale image']);
+imshow(new);                    %          
+title(['Image without background']);
 subplot(3, 2, 3);
-imshow(binImage2);                              
-title('Image filter oil drum');
+imshow(b);                              
+title('Binarized');
 subplot(3, 2, 4);
-imshow(binImage3);                              
-title('Image filter filling hole');
+imshow(binImage2);                              
+title('Image filter filling drum');
 subplot(3, 2, 5);
-imshow(b);                                      
-title('Image filter filling DRUM');
+imshow(binImage3);                                      
+title('Image filter filling hole');
